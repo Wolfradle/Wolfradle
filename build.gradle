@@ -1,0 +1,58 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.32'
+    id 'groovy'
+    id 'maven-publish'
+}
+
+group 'skywolf46'
+version properties["version"] as String
+repositories {
+    mavenCentral()
+}
+
+gradlePlugin {
+    plugins {
+        wolfradle {
+            id = "skywolf46.wolfradle"
+            implementationClass = "skywolf46.wolfradle.gradle.Wolfradle"
+        }
+    }
+}
+
+task gradlePublish {
+    dependsOn("publishJarPublicationToReposiliteRepository")
+}
+
+dependencies {
+    gradleApi()
+    compile 'org.codehaus.groovy:groovy-all:3.0.8'
+    compileOnly(group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: '1.4.32') {
+        transitive = false
+    }
+    implementation("org.apache.bcel:bcel:6.5.0")
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "Reposilite"
+            url(rootProject.properties["snapshot"] as Boolean ? rootProject.properties['reposilite.snapshot'] as String : rootProject.properties['reposilite.release'] as String)
+            credentials {
+                username rootProject.properties['reposilite.user'] as String
+                password rootProject.properties['reposilite.token'] as String
+            }
+        }
+    }
+    publications {
+        create("jar", MavenPublication) {
+
+            artifacts {
+                groupId 'skywolf46'
+                artifactId "wolfradle"
+                version rootProject.properties['version'] as String
+            }
+        }
+    }
+}
+
