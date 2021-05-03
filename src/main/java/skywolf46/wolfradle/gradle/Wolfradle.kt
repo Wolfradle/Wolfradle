@@ -21,6 +21,8 @@ class Wolfradle : Plugin<Project> {
     }
 
     override fun apply(project: Project) {
+        softDependation.clear()
+        forceDependation.clear()
         println("Wolfradle | Waiting for Java plugin initialize")
         project.plugins.apply("java")
         project.plugins.apply("org.jetbrains.kotlin.jvm")
@@ -37,7 +39,8 @@ class Wolfradle : Plugin<Project> {
         project.tasks.getByPath("processResources").dependsOn("generatePluginFile")
         println("Wolfradle | Registering extension methods")
 
-        val compileDeps = project.getConfigurations().getByName("compile").getDependencies()
+        val compileDeps = project.configurations.getByName("compile").dependencies
+        val compileOnlyDeps = project.configurations.getByName("compileOnly").dependencies
         val wolfyDepsConf = project.configurations.create("wolfy")
         val wolfyDeps = wolfyDepsConf.dependencies
         project.configurations.add(wolfyDepsConf)
@@ -127,6 +130,8 @@ class Wolfradle : Plugin<Project> {
                         override fun afterResolve(p0: ResolvableDependencies) {
                             val nameMap = mutableMapOf<String, Dependency>()
                             for (x in p0.dependencies) {
+                                if (!compileDeps.contains(x) && !compileOnlyDeps.contains(x))
+                                    continue
                                 nameMap[x.name] = x
                             }
                             val map = mutableMapOf<Dependency, File>()
@@ -136,7 +141,6 @@ class Wolfradle : Plugin<Project> {
                                     map[nameMap[targetScan]!!] = x
                             }
                             for ((x, y) in map) {
-//                                println("Wolfradle | Scanning ${x.name}")
                                 val deps = PluginUtil.extractPluginInfo(x, y) ?: continue
                                 if (wolfyDeps.contains(x)) {
                                     forceDependation += deps
