@@ -31,7 +31,7 @@ pluginManagement {
 
 ```groovy
 plugins {
-    id 'skywolf46.wolfradle' version "1.0.43"
+    id 'skywolf46.wolfradle' version "1.0.45"
 }
 ```
 
