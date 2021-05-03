@@ -32,6 +32,7 @@ pluginManagement {
 ```groovy
 plugins {
     id 'skywolf46.wolfradle' version "1.0.45"
+    id 'org.jetbrains.kotlin.jvm' version '1.4.32'
 }
 ```
 
