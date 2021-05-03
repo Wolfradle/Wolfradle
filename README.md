@@ -1,6 +1,4 @@
 ## Wolfradle
-<br>
-
 #### What is Wolfradle?
 Wolfradle is gradle plugin that simplify adding dependency of my plugin.<br>
 Wolfradle also auto generates plugin.yml.
