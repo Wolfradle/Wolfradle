@@ -1,21 +1,27 @@
 package skywolf46.wolfradle.gradle.tasks
 
+import groovy.lang.Closure
 import org.apache.bcel.Const
 import org.gradle.api.DefaultTask
-import org.gradle.api.internal.file.pattern.PatternMatcherFactory
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.internal.file.copy.CopySpecInternal
+import org.gradle.api.internal.file.copy.DefaultCopySpec
+import org.gradle.api.internal.file.copy.DestinationRootCopySpec
 import org.gradle.api.plugins.JavaPluginConvention
-import org.gradle.api.tasks.TaskAction
-import org.yaml.snakeyaml.DumperOptions
-import org.yaml.snakeyaml.Yaml
+import org.gradle.api.provider.Property
+import org.gradle.api.specs.Spec
+import org.gradle.api.tasks.*
+import org.gradle.jvm.tasks.Jar
+import org.gradle.language.jvm.tasks.ProcessResources
+import org.gradle.work.Incremental
 import skywolf46.wolfradle.gradle.Wolfradle
 import skywolf46.wolfradle.gradle.util.ClassExtractor
 import java.io.File
-import java.io.FileOutputStream
 import java.io.FileWriter
-import java.lang.IllegalStateException
 
 
-open class PluginFileGeneratingTask : DefaultTask() {
+abstract class PluginFileGeneratingTask : DefaultTask() {
+
     @TaskAction
     fun generatePlugin() {
 //        if (property("disabled") == true) {
@@ -64,8 +70,11 @@ open class PluginFileGeneratingTask : DefaultTask() {
         if (mainClass == null) {
             throw IllegalStateException("Error: JavaPlugin implmentation not found in project ${project.name}")
         }
-
-        val resDir = sourceSet.output.classesDirs.singleFile
+//        val resDir = File(sourceSet.output.resourcesDir!!.parentFile, "wolfradle/resources")
+//        val resDir = destinationDir
+//        val resDir = sourceSet.output.resourcesDir!!
+        val resDir = project.layout.buildDirectory.file("wolfradle/resources").get().asFile
+//        val resDir = getOutputDir().asFile.get()
         if (!resDir.exists())
             resDir.mkdirs()
         val file = File(resDir, "plugin.yml")
@@ -86,8 +95,12 @@ open class PluginFileGeneratingTask : DefaultTask() {
         }
         stream.flush()
         stream.close()
+
         println("Wolfradle | Generated plugin.yml in ${file.path}")
+        val proc: Jar = project.tasks.getByPath("jar") as Jar
+        proc.from(file)
     }
+
 }
 
 fun parseFileListOf(file: File, lst: MutableList<File>) {
