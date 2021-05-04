@@ -2,6 +2,7 @@ package skywolf46.wolfradle.gradle.tasks
 
 import org.apache.bcel.Const
 import org.gradle.api.DefaultTask
+import org.gradle.api.internal.file.pattern.PatternMatcherFactory
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.TaskAction
 import org.yaml.snakeyaml.DumperOptions
@@ -17,12 +18,27 @@ import java.lang.IllegalStateException
 open class PluginFileGeneratingTask : DefaultTask() {
     @TaskAction
     fun generatePlugin() {
+//        if (property("disabled") == true) {
+//            println("Wolfradle | Task disabled; Skipping.")
+//            return
+//        }
         println("Wolfradle | Distinction duplicate dependencies...")
         val force = Wolfradle.forceDependation.distinct()
         val soft = Wolfradle.softDependation.distinct()
         println("Wolfradle | Generating plugin data file...")
         val pl = project.convention.getPlugin(JavaPluginConvention::class.java)
         val sourceSet = pl.sourceSets.getByName("main")
+        val res = sourceSet.resources.sourceDirectories
+        if (!res.isEmpty) {
+            if (res.singleFile.isDirectory) {
+                for (x in res.singleFile.listFiles()) {
+                    if (x.name == "plugin.yml") {
+                        println("Wolfradle | Original plugin.yml detected. File will not be generated.")
+                        return
+                    }
+                }
+            }
+        }
         val cls = mutableListOf<File>()
         for (x in sourceSet.output.classesDirs) {
             parseFileListOf(x, cls)

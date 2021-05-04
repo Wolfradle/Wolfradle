@@ -136,9 +136,12 @@ class Wolfradle : Plugin<Project> {
                             }
                             val map = mutableMapOf<Dependency, File>()
                             for (x in p0.files) {
-                                val targetScan = x.name.substring(0, x.name.lastIndexOf('-'))
-                                if (nameMap.containsKey(targetScan))
-                                    map[nameMap[targetScan]!!] = x
+                                try {
+                                    val targetScan = x.name.substring(0, x.name.lastIndexOf('-'))
+                                    if (nameMap.containsKey(targetScan))
+                                        map[nameMap[targetScan]!!] = x
+                                } catch (e: Exception) {
+                                }
                             }
                             for ((x, y) in map) {
                                 val deps = PluginUtil.extractPluginInfo(x, y) ?: continue
