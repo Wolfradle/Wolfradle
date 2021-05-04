@@ -1,4 +1,5 @@
-## Wolfradle
+## Wolfradle 
+###### Currently stable: 1.0.51
 <br>
 
 #### What is Wolfradle?
@@ -33,8 +34,7 @@ pluginManagement {
 
 ```groovy
 plugins {
-    id 'skywolf46.wolfradle' version "1.0.49"
-    id 'org.jetbrains.kotlin.jvm' version '1.4.32'
+    id 'skywolf46.wolfradle' version "1.0.51"
 }
 ```
 

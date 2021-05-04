@@ -25,7 +25,7 @@ class Wolfradle : Plugin<Project> {
         forceDependation.clear()
         println("Wolfradle | Waiting for Java plugin initialize")
         project.plugins.apply("java")
-        project.plugins.apply("org.jetbrains.kotlin.jvm")
+//        project.plugins.apply("org.jetbrains.kotlin.jvm")
         println("Wolfradle | Setting up Skywolf repositories")
         project.repositories.maven {
             it.url = URI("http://dja.kr:55201/spigot")
@@ -36,7 +36,7 @@ class Wolfradle : Plugin<Project> {
 
         println("Wolfradle | Registering task")
         project.tasks.register("generatePluginFile", PluginFileGeneratingTask::class.java)
-        project.tasks.getByPath("processResources").dependsOn("generatePluginFile")
+        project.tasks.getByPath("compileJava").dependsOn("generatePluginFile")
         println("Wolfradle | Registering extension methods")
 
         val compileDeps = project.configurations.getByName("compile").dependencies

@@ -65,7 +65,7 @@ open class PluginFileGeneratingTask : DefaultTask() {
             throw IllegalStateException("Error: JavaPlugin implmentation not found in project ${project.name}")
         }
 
-        val resDir = sourceSet.output.resourcesDir!!
+        val resDir = sourceSet.output.classesDirs.singleFile
         if (!resDir.exists())
             resDir.mkdirs()
         val file = File(resDir, "plugin.yml")
