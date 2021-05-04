@@ -1,4 +1,6 @@
 ## Wolfradle
+<br>
+
 #### What is Wolfradle?
 Wolfradle is gradle plugin that simplify adding dependency of my plugin.<br>
 Wolfradle also auto generates plugin.yml.
@@ -31,7 +33,7 @@ pluginManagement {
 
 ```groovy
 plugins {
-    id 'skywolf46.wolfradle' version "1.0.45"
+    id 'skywolf46.wolfradle' version "1.0.49"
     id 'org.jetbrains.kotlin.jvm' version '1.4.32'
 }
 ```
