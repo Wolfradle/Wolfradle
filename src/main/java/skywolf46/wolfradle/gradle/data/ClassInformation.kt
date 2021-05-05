@@ -1,4 +1,5 @@
 package skywolf46.wolfradle.gradle.data
 
-data class ClassInformation(val modifier: Int, val className: String, val superClass: String?) {
+class ClassInformation(modifier: Int, val className: String, val superClass: String?) {
+    val modifier = ClassModifiers(modifier)
 }

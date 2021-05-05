@@ -9,7 +9,8 @@ import org.gradle.api.artifacts.DependencyResolutionListener
 import org.gradle.api.artifacts.ResolvableDependencies
 import org.gradle.api.plugins.ExtraPropertiesExtension
 import skywolf46.wolfradle.gradle.data.DependencyData
-import skywolf46.wolfradle.gradle.tasks.PluginFileGeneratingTask
+import skywolf46.wolfradle.gradle.tasks.BungeePluginFileGeneratingTask
+import skywolf46.wolfradle.gradle.tasks.JavaPluginFileGeneratingTask
 import skywolf46.wolfradle.gradle.util.PluginUtil
 import java.io.File
 import java.net.URI
@@ -35,8 +36,10 @@ class Wolfradle : Plugin<Project> {
         }
 
         println("Wolfradle | Registering task")
-        project.tasks.register("generatePluginFile", PluginFileGeneratingTask::class.java)
-        project.tasks.getByPath("processResources").dependsOn("generatePluginFile")
+        project.tasks.register("generateJavaPluginFile", JavaPluginFileGeneratingTask::class.java)
+        project.tasks.register("generateBungeePluginFile", BungeePluginFileGeneratingTask::class.java)
+        project.tasks.getByPath("processResources").dependsOn("generateJavaPluginFile")
+        project.tasks.getByPath("processResources").dependsOn("generateBungeePluginFile")
         println("Wolfradle | Registering extension methods")
 
         val compileDeps = project.configurations.getByName("compile").dependencies
@@ -118,44 +121,8 @@ class Wolfradle : Plugin<Project> {
 
         project.gradle.addListener(object : DependencyResolutionListener {
             override fun beforeResolve(p0: ResolvableDependencies) {
-//                p0.dependencies.addAll(wolfyDeps)
                 compileDeps.addAll(wolfyDeps)
                 project.gradle.removeListener(this)
-                project.gradle.addListener(
-                    object : DependencyResolutionListener {
-                        override fun beforeResolve(p0: ResolvableDependencies) {
-
-                        }
-
-                        override fun afterResolve(p0: ResolvableDependencies) {
-                            val nameMap = mutableMapOf<String, Dependency>()
-                            for (x in p0.dependencies) {
-                                if (!compileDeps.contains(x) && !compileOnlyDeps.contains(x))
-                                    continue
-                                nameMap[x.name] = x
-                            }
-                            val map = mutableMapOf<Dependency, File>()
-                            for (x in p0.files) {
-                                try {
-                                    val targetScan = x.name.substring(0, x.name.lastIndexOf('-'))
-                                    if (nameMap.containsKey(targetScan))
-                                        map[nameMap[targetScan]!!] = x
-                                } catch (e: Exception) {
-                                }
-                            }
-                            for ((x, y) in map) {
-                                val deps = PluginUtil.extractPluginInfo(x, y) ?: continue
-                                if (wolfyDeps.contains(x)) {
-                                    forceDependation += deps
-                                    println("Wolfradle | Plugin ${deps.pluginName} added as force dependency (${x.name} -> ${y.name})")
-                                } else {
-                                    softDependation += deps
-                                    println("Wolfradle | Plugin ${deps.pluginName} added as soft dependency (${x.name} -> ${y.name})")
-                                }
-                            }
-                        }
-                    }
-                )
             }
 
             override fun afterResolve(p0: ResolvableDependencies) {
@@ -163,17 +130,6 @@ class Wolfradle : Plugin<Project> {
             }
 
         })
-
-//        println("Configuring buildscript classpath")
-//        p0.buildscript.repositories.maven {
-//            it.url = URI("http://dja.kr:55201/")
-//        }
-//        val buildDeps = p0.buildscript.configurations.getByName("classpath").dependencies
-//        println("Adding Wolfradle to classpath")
-//        buildDeps.add(p0.buildscript.dependencies.create("skywolf46:wolfgradle:1.0.30"))
-//        println(p0.buildscript.classLoader)
-//        val load = p0.buildscript.classLoader as VisitableURLClassLoader
-//        load.addURL(Wolfradle::class.java.protectionDomain.codeSource.location)
     }
 }
 

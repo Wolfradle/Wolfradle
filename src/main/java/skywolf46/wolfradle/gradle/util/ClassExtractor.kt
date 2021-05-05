@@ -4,13 +4,15 @@ import org.apache.bcel.Const
 import org.apache.bcel.classfile.ConstantPool
 import org.apache.bcel.classfile.Utility
 import skywolf46.wolfradle.gradle.data.ClassInformation
+import java.io.DataInput
 import java.io.DataInputStream
 import java.io.File
 
 object ClassExtractor {
     private val JVM_CLASSIFIER = 0xCAFEBABE
-    fun extract(file: File): ClassInformation? {
-        val stream = DataInputStream(file.inputStream())
+    fun extract(file: File) = extract(DataInputStream(file.inputStream()))
+
+    fun extract(stream: DataInputStream): ClassInformation {
         // Skipping identifier
         stream.readInt()
 //        if (stream.readInt().toLong() != JVM_CLASSIFIER)
