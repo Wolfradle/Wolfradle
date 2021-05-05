@@ -1,0 +1,35 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Gradle Wrapper Validation
+        # You may pin to the exact commit or the version.
+        # uses: gradle/wrapper-validation-action@e2c57acffb2c9aa5a8dc6eda2bbae0b6e495bd4c
+        uses: gradle/wrapper-validation-action@v1.0.3
+      - name: Codecov
+        # You may pin to the exact commit or the version.
+        # uses: codecov/codecov-action@a1ed4b322b4b38cb846afb5a0ebfa17086917d27
+        uses: codecov/codecov-action@v1.5.0
