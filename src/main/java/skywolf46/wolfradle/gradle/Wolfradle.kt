@@ -36,7 +36,7 @@ class Wolfradle : Plugin<Project> {
 
         println("Wolfradle | Registering task")
         project.tasks.register("generatePluginFile", PluginFileGeneratingTask::class.java)
-        project.tasks.getByPath("compileJava").dependsOn("generatePluginFile")
+        project.tasks.getByPath("processResources").dependsOn("generatePluginFile")
         println("Wolfradle | Registering extension methods")
 
         val compileDeps = project.configurations.getByName("compile").dependencies
