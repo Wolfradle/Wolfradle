@@ -4,6 +4,7 @@ plugins {
     id 'java-gradle-plugin'
     id 'org.jetbrains.kotlin.jvm' version '1.4.32'
     id 'maven-publish'
+    id 'jacoco'
 }
 
 group 'skywolf46'
@@ -66,3 +67,9 @@ publishing {
     }
 }
 
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled false
+    }
+}
