@@ -79,6 +79,7 @@ abstract class JavaPluginFileGeneratingTask : DefaultTask() {
             stream.appendLine("name: ${mainClass.substring(mainClass.lastIndexOf(".") + 1)}")
             stream.appendLine("version: ${project.version}")
             stream.appendLine("main: ${mainClass}")
+            stream.appendLine("api-version: 1.13")
             stream.appendLine("description: Plugin file generated with Wolfradle")
             if (force.isNotEmpty()) {
                 stream.appendLine("depend:")
