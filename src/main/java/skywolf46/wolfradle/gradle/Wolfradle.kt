@@ -49,7 +49,7 @@ class Wolfradle : Plugin<Project> {
         project.configurations.add(wolfyDepsConf)
         project.dependencies.groovyExtension.set("kotlin", object : Closure<Any>(this, this) {
             fun doCall(version: String?) = run {
-                wolfyDeps.add(project.dependencies.create("org.jetbrains.kotlin:stdlib:${version ?: "1.4.32"}"))
+                wolfyDeps.add(project.dependencies.create("org.jetbrains.kotlin:kotlin-stdlib:${version ?: "1.4.32"}"))
             }
         })
 
@@ -67,6 +67,13 @@ class Wolfradle : Plugin<Project> {
         project.dependencies.groovyExtension.set("spigotApi", object : Closure<Any>(this, this) {
             fun doCall(version: String) = run {
                 wolfyDeps.add(project.dependencies.create("org.spigotmc:spigot:$version"))
+            }
+        })
+
+
+        project.dependencies.groovyExtension.set("bungeeApi", object : Closure<Any>(this, this) {
+            fun doCall(version: String?) = run {
+                wolfyDeps.add(project.dependencies.create("org.spigotmc:bungeecord:${version ?: "latest.release"}"))
             }
         })
 
@@ -113,6 +120,21 @@ class Wolfradle : Plugin<Project> {
                 wolfyDeps.add(project.dependencies.create("skywolf46:asyncdataloader-core:${version ?: "latest.release"}"))
                 wolfyDeps.add(project.dependencies.create("skywolf46:asyncdataloader-file:${version ?: "latest.release"}"))
                 wolfyDeps.add(project.dependencies.create("skywolf46:asyncdataloader-mysql:${version ?: "latest.release"}"))
+            }
+        })
+
+        project.dependencies.groovyExtension.set("wolfyFileLoader", object : Closure<Any>(this, this) {
+            fun doCall(version: String?) = run {
+                wolfyDeps.add(project.dependencies.create("skywolf46:asyncdataloader-core:${version ?: "latest.release"}"))
+                wolfyDeps.add(project.dependencies.create("skywolf46:asyncdataloader-file:${version ?: "latest.release"}"))
+            }
+        })
+
+        project.dependencies.groovyExtension.set("wolfySQLLoader", object : Closure<Any>(this, this) {
+            fun doCall(version: String?) = run {
+                wolfyDeps.add(project.dependencies.create("skywolf46:asyncdataloader-core:${version ?: "latest.release"}"))
+                wolfyDeps.add(project.dependencies.create("skywolf46:asyncdataloader-mysql:${version ?: "latest.release"}"))
+                compileDeps.add(project.dependencies.create("skywolf46:asyncdataloader-file:${version ?: "latest.release"}"))
             }
         })
 
