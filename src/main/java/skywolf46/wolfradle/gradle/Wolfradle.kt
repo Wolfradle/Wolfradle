@@ -30,9 +30,11 @@ class Wolfradle : Plugin<Project> {
         println("Wolfradle | Setting up Skywolf repositories")
         project.repositories.maven {
             it.url = URI("http://dja.kr:55201/spigot")
+            it.isAllowInsecureProtocol = true
         }
         project.repositories.maven {
             it.url = URI("http://dja.kr:55201/releases")
+            it.isAllowInsecureProtocol = true
         }
 
         println("Wolfradle | Registering task")
@@ -42,8 +44,8 @@ class Wolfradle : Plugin<Project> {
         project.tasks.getByPath("processResources").dependsOn("generateBungeePluginFile")
         println("Wolfradle | Registering extension methods")
 
-        val compileDeps = project.configurations.getByName("compile").dependencies
-        val compileOnlyDeps = project.configurations.getByName("compileOnly").dependencies
+        val compileDeps = project.configurations.getByName("compileOnly").dependencies
+//        val compileOnlyDeps = project.configurations.getByName("compileOnly").dependencies
         val wolfyDepsConf = project.configurations.create("wolfy")
         val wolfyDeps = wolfyDepsConf.dependencies
         project.configurations.add(wolfyDepsConf)
@@ -94,6 +96,14 @@ class Wolfradle : Plugin<Project> {
                 wolfyDeps.add(project.dependencies.create("skywolf46:exutil:${version ?: "latest.release"}"))
             }
         })
+
+
+        project.dependencies.groovyExtension.set("wolfyMessage", object : Closure<Any>(this, this) {
+            fun doCall(version: String?) = run {
+                wolfyDeps.add(project.dependencies.create("skywolf46:placeholders:${version ?: "latest.release"}"))
+            }
+        })
+
         project.dependencies.groovyExtension.set("wolfyUI", object : Closure<Any>(this, this) {
             fun doCall(version: String?) = run {
                 wolfyDeps.add(project.dependencies.create("skywolf46:iui:${version ?: "latest.release"}"))
